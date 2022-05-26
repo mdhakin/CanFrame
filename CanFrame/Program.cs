@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace CanFrame
@@ -11,10 +7,36 @@ namespace CanFrame
     {
         static void Main(string[] args)
         {
-            string fName = @"C:\output\6397\6397.dat";
+            if (args.Length > 0 && args[0] == "h")
+            {
+                Console.WriteLine("type test to run test file or enter the full path of the .dat file you wish to read in.");
+                Console.WriteLine(@"Example:> CanFrame.exe c:\output\6082\6082.dat");
+                return;
+            }
+            
+            if (args.Length > 0)
+            {
+                string fName;
+                string testfName = "6082.dat";
+                if (args[0] == "test")
+                {
+                    Console.WriteLine("Running Test File 6082.dat");
+                    fName = testfName;
+                }else
+                {
+                    Console.WriteLine(args[0]);
+                    fName = args[0];
+                }
+                
+                
 
-            CanData data = new CanData(fName);
-            string[] temp = data.readings;
+                CanData data = new CanData(fName);
+                string[] temp = data.readings;
+            }else
+            {
+                Console.WriteLine("Please enter a valid filename or type h for help");
+            }
+            
             Console.ReadLine();
         }
     }
@@ -56,12 +78,14 @@ namespace CanFrame
                 writedata[i + 1] = outstr[i].Replace('|',',');
             }
 
-            if (File.Exists(@"C:\Users\mhakin\Desktop\output.csv"))
+            if (File.Exists(@"output.csv"))
             {
-                File.Delete(@"C:\Users\mhakin\Desktop\output.csv");
+                File.Delete(@"output.csv");
             }
 
-            File.WriteAllLines(@"C:\Users\mhakin\Desktop\output.csv", writedata);
+            File.WriteAllLines(@"output.csv", writedata);
+
+            Console.WriteLine("Wrote output.csv to Application folder");
         }
 
         private Compare_dataset.Compare_dataset verifyFile()
