@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace CanFrame
@@ -52,6 +53,8 @@ namespace CanFrame
             this.FileName = mFileName;
             Compare_dataset.Compare_dataset dataset = verifyFile();
 
+
+
             string[] outstr = dataset.getResult();
 
             string[] writedata = new string[outstr.Length + 1];
@@ -78,14 +81,14 @@ namespace CanFrame
                 writedata[i + 1] = outstr[i].Replace('|',',');
             }
 
-            if (File.Exists(@"output.csv"))
+            if (File.Exists(mFileName + ".csv"))
             {
-                File.Delete(@"output.csv");
+                File.Delete(mFileName + ".csv");
             }
 
-            File.WriteAllLines(@"output.csv", writedata);
+            File.WriteAllLines(mFileName + ".csv", writedata);
 
-            Console.WriteLine("Wrote output.csv to Application folder");
+            Console.WriteLine("Wrote " + mFileName +  ".csv");
         }
 
         private Compare_dataset.Compare_dataset verifyFile()
@@ -117,6 +120,42 @@ namespace CanFrame
 
             return null;
             
+        }
+    }
+
+    public class LogActivity
+    {
+        List<string> logdata = new List<string>();
+        bool bufferEmpty = true;
+        public void writeLog(string logMessage)
+        {
+            logdata.Add(logMessage);
+            bufferEmpty = false;
+        }
+
+
+        public bool writeLogData(string sFileName)
+        {
+
+            if (!bufferEmpty)
+            {
+                if (File.Exists(sFileName))
+                {
+                    File.AppendAllLines(sFileName, logdata);
+                }
+                else
+                {
+                    File.WriteAllLines(sFileName, logdata);
+                }
+                logdata.Clear();
+                bufferEmpty = true;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
     }
 }
